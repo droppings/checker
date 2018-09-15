@@ -1,0 +1,27 @@
+{
+  "name": "checker",
+  "version": "1.0.0",
+  "description": "check page specification",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/droppings/checker.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Dropping",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/droppings/checker/issues"
+  },
+  "homepage": "https://github.com/droppings/checker#readme",
+  "devDependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0"
+  }
+}

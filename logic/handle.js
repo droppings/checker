@@ -15,17 +15,16 @@ class Handle {
         let ctx_query = ctx.query;
         let ctx_querystring = ctx.querystring;
 
-        ctx.body = {
-            url,
-            req_query,
-            req_querystring,
-            ctx_query,
-            ctx_querystring
-        }
+        // ctx.body = {
+        //     url,
+        //     req_query,
+        //     req_querystring,
+        //     ctx_query,
+        //     ctx_querystring
+        // }
 
-        analysis.getPageContent(req_query.url).then(html=>{
-            console.log(html)
-        });
+        let data = await analysis.getPageContent(req_query.url);
+        ctx.body = data;
     }
 
 
