@@ -1,9 +1,13 @@
 const analysis = require('../analysis.js');
 
+const phantom = require('phantom');
+
+
+
 class Handle {
 
     // 提交要检测的url
-    async submitUrl(ctx, next) {
+    async getReport(ctx, next) {
 
         let url = ctx.url
         // 从上下文的request对象中获取
@@ -23,8 +27,13 @@ class Handle {
         //     ctx_querystring
         // }
 
-        let data = await analysis.getPageContent(req_query.url);
-        ctx.body = data;
+        //let data = await analysis.getPageContent(req_query.url);
+        let data = await analysis.getPage(req_query.url);
+        
+        //ctx.body = data;
+        await ctx.render('index',{
+            data: data.data
+        })
     }
 
 

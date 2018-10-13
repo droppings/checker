@@ -1,67 +1,75 @@
-const http = require("http");
 const cheerio = require("cheerio"); //为服务器特别定制的，快速、灵活、实施的jQuery核心实现
+const axios = require("axios");
+const phantom = require('phantom');
 
 
 //code: 0 fail, 1 success
 
-class Analysis{
+class Analysis {
 
 	constructor() {
-	    this.report = {
-	    	specification: {},
-	    	bugs: [],
-	    	copywriting: []
-	    };
-	    this.type = null;
+		this.report = {
+			specification: {},
+			bugs: [],
+			copywriting: []
+		};
+		this.type = null;
+		this.request_url = [];
+	}
+	
+	//phantom
+	async getPage(url) {
+
+		console.log(url)
+
+		let result_urls = [];
+
+		const instance = await phantom.create();
+		const page = await instance.createPage();
+		await page.on('onResourceRequested', function(requestData) {
+			console.info('Requesting', requestData.url);
+			result_urls.push(requestData.url);
+		});
+
+		await page.on('onResourceReceived', function(responseData) {
+			console.info('response', responseData.url, responseData.status);
+			//result_urls.push(requestData.url);
+		});
+
+		const status = await page.open(url);
+		const content = await page.property('content');
+
+	
+		await instance.exit();
+
+		return this.analysising(content);
 	}
 
-	//抓取页面内容
-	getPageContent(url){
+	doRequest() {
 
-		return new Promise((resolve)=>{
-			http.get(url, res=>{
-				var html = '';
-				res.on('data', (d)=> {
-					html += d.toString()
-				});
-				res.on('end', () =>{
-					//resolve(html);
-					resolve(this.analysising(html));
-				});
-			})
-			.on('error', res=>{
-				//reject(res);
-				resolve({
-				    status: false,
-				    code: 0,
-				    msg: '输入的链接无效'
-				})
-			})
-		})
-		
 	}
 
-	getPageType(){
+	getPageType() {
 
 	}
 
 	//分析页面
-	analysising(html){
+	analysising(html) {
 		let $ = cheerio.load(html);
 
 		this.getUrls($);
 		this.htmlreview($);
 
 		return {
-		    status: true,
-		    code: 1,
-		    msg: 'success',
-		    data: this.report
+			status: true,
+			code: 1,
+			msg: 'success',
+			data: this.report
 		}
 	}
 
 	//页面的url
-	getUrls($){
+	getUrls($) {
 
 		let spec = this.report.specification;
 
@@ -70,40 +78,36 @@ class Analysis{
 		let a_link = [];
 		let a_temp;
 
-		console.log(typeof a_arr, a_arr.length)
-
-		for(let i = 0, len = a_arr.length; i<len; i++){
+		for (let i = 0, len = a_arr.length; i < len; i++) {
 
 			a_temp = a_arr.eq(i);
-			if(a_temp.attr('href')){
-				//todo 过滤
-				a_link.push(a_temp.attr('href'))
-			}
 
-			if(a_temp.text().replace(/\s\S/ig, '') == ''){
+			if (a_temp.text().replace(/\s\S/ig, '') == '') {
 
-				if(!spec.alink){
+				if (!spec.alink) {
 					spec.alink = {
 						level: 'A',
 						desc: 'A标签必须填写内容',
 						data: [$.html(a_temp)]
 					}
-				}else{
+				} else {
 					//console.log(i, a_temp.text(), )
 					spec.alink.data.push($.html(a_temp))
 				}
-				
+
 			}
 		}
-		console.log(a_link)
+		//console.log(a_link)
 	}
 
 	//代码规范
-	htmlreview($){
+	htmlreview($) {
 
-		
+
 	}
-	
+
+
+
 }
 
 module.exports = new Analysis();

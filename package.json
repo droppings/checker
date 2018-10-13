@@ -20,8 +20,15 @@
   },
   "homepage": "https://github.com/droppings/checker#readme",
   "devDependencies": {
+    "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
     "koa-bodyparser": "^4.2.1",
-    "koa-router": "^7.4.0"
+    "koa-router": "^8.0.0-alpha.1",
+    "phantom": "^6.0.3"
+  },
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "koa": "^2.0.0-alpha.8",
+    "koa-views": "^5.2.1"
   }
 }
